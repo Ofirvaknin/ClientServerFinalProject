@@ -31,6 +31,11 @@ app.get('/forgot-password', async (req, res) => {
   res.sendFile(path.resolve(__dirname + '/forgot-password.html'));
 })
 
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function(req, res){
+  res.sendFile(path.resolve(__dirname + '/404.html'));
+});
+
 // End Routing 
 
 app.post('/sign-up', async (req, res) => {
@@ -97,11 +102,12 @@ app.post('/forgot-password', async (req, res) => {
       if (err){
         console.log(err);
         // show message to user?
+        res.send("Something went wrong please try again");
       }
       else{
         if (resu.rows.length == 0) {
           // no such email - need to show error
-          console.log('no input');
+          res.send("No such email in the database.");
 
         }
         else{
@@ -120,7 +126,7 @@ app.post('/forgot-password', async (req, res) => {
     if (client != null){
       client.release();
     }
-    // something went wrong message
+    res.send("Something went wrong please try again");
   }
 });
 
