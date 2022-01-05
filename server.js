@@ -52,8 +52,8 @@ app.post('/sign-up', async (req, res) => {
   client = await pool.connect();
  
   // hash the password
-  const hashedPassword = encryption.encrypt(inputPassword)
-
+  const hashedPassword = encryption.encrypt(inputPassword);
+  console.log(hashedPassword);
   // insert to db
   text = 'insert into users(email,firstName,lastName,password) values($1,$2,$3,$4)'
   values = [inputEmail, firstName, lastName, hashedPassword]
@@ -107,9 +107,7 @@ app.post('/forgot-password', async (req, res) => {
         else{
           // send confirmation email to the user
           encryptedPassword = resu.rows[0].password;
-          // NEEDS TO DECRYPT
-          decryptedPassword = encryptedPassword;
-
+          decryptedPassword = encryption.decrypt(encryptedPassword);
           message = "Hello " + resu.rows[0].firstname + ", your password is: " + decryptedPassword;
           console.log(message);
 
