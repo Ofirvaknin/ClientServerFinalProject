@@ -55,7 +55,6 @@ app.post('/sign-up', async (req, res) => {
   //Handle chapta
 
   client = await pool.connect();
- 
   // hash the password
   const hashedPassword = encryption.encrypt(inputPassword);
   console.log(hashedPassword);
@@ -129,6 +128,7 @@ app.post('/forgot-password', async (req, res) => {
     res.send("Something went wrong please try again");
   }
 });
+
 
 
 app.listen(port, () => {
