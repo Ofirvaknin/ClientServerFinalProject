@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const encryption = require("./encryption");
+const email = require("./email");
 var path = require("path");
 const port = process.env.PORT || 8080;
 
@@ -16,6 +17,8 @@ const pool = new Pool({
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({extended: true}));
 
+
+// Routing 
 app.get('/sign-up', async (req, res) => {
   res.sendFile(path.resolve(__dirname + '/register.html'));
 })
@@ -24,8 +27,15 @@ app.get('/sign-in', async (req, res) => {
   res.sendFile(path.resolve(__dirname + '/login.html'));
 })
 
+app.get('/forgot-password', async (req, res) => {
+  res.sendFile(path.resolve(__dirname + '/forgot-password.html'));
+})
+
+// End Routing 
+
 app.post('/sign-up', async (req, res) => {
   try {
+    client = null;
     // Get user information 
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
@@ -39,7 +49,7 @@ app.post('/sign-up', async (req, res) => {
   }
   //Handle chapta
 
-  const client = await pool.connect();
+  client = await pool.connect();
  
   // hash the password
   const hashedPassword = encryption.encrypt(inputPassword)
@@ -47,27 +57,74 @@ app.post('/sign-up', async (req, res) => {
   // insert to db
   text = 'insert into users(email,firstName,lastName,password) values($1,$2,$3,$4)'
   values = [inputEmail, firstName, lastName, hashedPassword]
-  
+
   client.query(text, values, (err, resu) => {
     if (err){
       console.log(err);
       // show message to user?
     }
     else{
+       // send confirmation email to the user
+      message = "Hello " + firstName + ", Thank you for signing up!"
+      emailRes = email.sendEmail(inputEmail, 'SignUp Confirmation', message);
       res.redirect('/sign-in');
     }
   })
   
   client.release();
-  // send confirmation email to the user
 
   } catch (error) {
-    client.release();
-
+    if (client != null){
+      client.release();
+    }
     // something went wrong message
   }
   
-})
+});
+
+app.post('/forgot-password', async (req, res) => {
+  try {
+    client = null;
+    // Get user information 
+    let inputEmail = req.body.inputEmail;
+
+    //find the user in the data base and return his password
+    client = await pool.connect();
+    text = "Select email, firstName, password from users where email = $1";
+    values = [inputEmail]
+
+    client.query(text,values, (err, resu) => {
+      if (err){
+        console.log(err);
+        // show message to user?
+      }
+      else{
+        if (resu.rows.length == 0) {
+          // no such email - need to show error
+          console.log('no input');
+
+        }
+        else{
+          // send confirmation email to the user
+          encryptedPassword = resu.rows[0].password;
+          // NEEDS TO DECRYPT
+          decryptedPassword = encryptedPassword;
+
+          message = "Hello " + resu.rows[0].firstname + ", your password is: " + decryptedPassword;
+          console.log(message);
+
+          email.sendEmail(inputEmail, 'Password recovery', message);
+          res.redirect('/sign-in');
+        }
+      }
+    })
+  } catch (error) {
+    if (client != null){
+      client.release();
+    }
+    // something went wrong message
+  }
+});
 
 
 app.listen(port, () => {
