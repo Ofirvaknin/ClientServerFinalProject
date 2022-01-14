@@ -30,8 +30,56 @@ app.get('/sign-in', async (req, res) => {
 app.get('/forgot-password', async (req, res) => {
   res.sendFile(path.resolve(__dirname + '/forgot-password.html'));
 })
+app.get('/index', async (req, res) => {
+  res.sendFile(path.resolve(__dirname + '/index.html'));
+})
 
 // End Routing 
+
+app.post('/sign-in', async (req, res) => {
+  console.log('Test1');
+  try{
+    client =null
+    //Get inputs from form
+    let email = req.body.email;
+    let password = req.body.password;
+    client = await pool.connect();
+    text = "Select password from users where email = $1";
+    values = [email];
+    console.log(password);
+    client.query(text,values, (err, resu) => {
+      if (err){
+        console.log(err);
+      }
+      else{
+        if (resu.rows.length == 0) {
+          // no such email - need to show error
+          console.log('no input');
+
+        }
+        else{
+          if(encryption.decrypt(resu.rows[0].password)==password){
+            console.log('TEST2');
+            res.redirect('/index');
+          }
+          else{
+            console.log('wrong credientials');
+            console.log(encryption.decrypt(resu.rows[0].password));
+            //message of wrong credientials
+          }
+        }
+      }
+    })
+
+  } catch (error) {
+    console.log('Catch!');
+    if (client != null){
+      client.release();
+    }
+    // something went wrong message
+  }
+  
+});
 
 app.post('/sign-up', async (req, res) => {
   try {
