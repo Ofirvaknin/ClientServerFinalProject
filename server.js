@@ -3,12 +3,17 @@ const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const encryption = require("./encryption");
 const email = require("./email");
+const db = require("./queries");
+const { stringify } = require('querystring');
+const fetch = require('node-fetch');
 var path = require("path");
 var session = require('express-session');
 const port = process.env.PORT || 8080;
 
 const app = express();
 const { Pool } = require('pg')
+const req = require("express/lib/request");
+const { request } = require("http");
 const pool = new Pool({
   connectionString: "postgres://twviwytdgumecr:704b9ba05afdb529678955f3e0223f07515a7f41167ecdaefd1952b5a817f1c1@ec2-54-77-182-219.eu-west-1.compute.amazonaws.com:5432/da8gf7ls09bs64",
   ssl: {
@@ -16,8 +21,10 @@ const pool = new Pool({
   }
 })
 app.use(express.static(__dirname));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.use(session({secret:"g8g8fg8fg8fg8i", resave:false, saveUninitialized:true}));
+app.use(express.json());
 
 // Routing 
 app.get('/', async (req, res) => {
@@ -28,10 +35,11 @@ app.get('/', async (req, res) => {
   else{
     res.redirect('/index');
   }
-})
+});
+
 app.get('/sign-up', async (req, res) => {
   res.sendFile(path.resolve(__dirname + '/register.html'));
-})
+});
 
 app.get('/sign-in', async (req, res) => {
   //res.sendFile(path.resolve(__dirname + '/login.html'));
@@ -41,14 +49,40 @@ app.get('/sign-in', async (req, res) => {
   else{
     res.redirect('/index');
   }
-})
+});
 
 app.get('/forgot-password', async (req, res) => {
   res.sendFile(path.resolve(__dirname + '/forgot-password.html'));
-})
+});
+
 app.get('/index', async (req, res) => {
-  res.sendFile(path.resolve(__dirname + '/index1.html'));
-})
+  if(!req.session.user){
+    res.redirect('/sign-in');
+  }
+  else{
+    res.sendFile(path.resolve(__dirname + '/tables.html'));
+  }
+});
+
+app.get('/tables', function (req, res) {
+  if(!req.session.user){
+    res.sendFile(path.resolve(__dirname + '/login.html'));  
+  }
+  else{
+    res.redirect('/index');
+  }
+});
+
+app.get('/contact-us', function (req, res) {
+  if(!req.session.user){
+    res.sendFile(path.resolve(__dirname + '/login.html'));  
+  }
+  else{
+    res.sendFile(path.resolve(__dirname + '/contactus.html'));  
+  }
+});
+
+app.get('/treatments',db.get_treatments);
 
 app.get('/t', async (req, res) => {
   if(!req.session.user){
@@ -57,7 +91,7 @@ app.get('/t', async (req, res) => {
   else{
     res.redirect('/index');
   }
-})
+});
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res){
@@ -65,7 +99,36 @@ app.get('*', function(req, res){
 });
 
 // End Routing 
+app.post('/captcha', async (req, res) => {
+  if(
+    req.body.captcha === undefined ||
+    req.body.captcha === '' ||
+    req.body.captcha === null
+  ){
+    return res.json({"success": false, "msg":"Please select captcha"});
+  }
 
+  const secretKey = '6LfiwRQeAAAAAJbZ5kLL_xrRztBQZ9jyGJl1vCn_';
+
+   // Verify URL
+   const query = stringify({
+    secret: secretKey,
+    response: req.body.captcha,
+    remoteip: req.connection.remoteAddress
+  });
+  const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
+
+  // Make a request to verifyURL
+  const body = await fetch(verifyURL).then(res => res.json());
+
+  // If not successful
+  if (body.success !== undefined && !body.success)
+    return res.json({ success: false, msg: 'Failed captcha verification' });
+
+  // If successful
+  return res.json({ success: true, msg: 'Captcha passed' });
+
+});
 app.post('/sign-in', async (req, res) => {
   try{
     client =null
@@ -124,7 +187,8 @@ app.post('/sign-up', async (req, res) => {
     res.send("Please fill all the fields!");
     return;
   }
-  if(inputPassword != repeatPassword){
+
+  if(inputPassword !== repeatPassword){
     res.send("Passwords does not match!");
     return;
   }
@@ -220,6 +284,40 @@ app.post('/forgot-password', async (req, res) => {
     }
     res.send("Something went wrong. Please try again later.");
   }
+});
+
+app.post('/contactus', (req, res) => {
+  let name = req.body.name;
+  let emailInput = req.body.email;
+  let select = req.body.select;
+  let texta = req.body.Textarea;
+
+  if (name == ''|| name==null)
+  {
+    res.send("Please fill the name field!");
+    return;
+  }
+  else if (emailInput=='' || emailInput == null){
+    res.send("Please fill the email field!");
+    return;
+  }
+  else if (select=='' || select == null){
+    res.send("Please choose your concering subject from the drop list!");
+    return;
+  }
+
+  else if (texta=='' || texta == null){
+    res.send("Please fill the text for your concering.");
+    return;
+  }
+  else{
+    message = 'test';
+    emailRes1 =email.sendEmail('g8gonature@gmail.com', name+", "+select,texta); //mail from user to our system
+    emailRes2 =email.sendEmail(emailInput,"Big S Garage: Thank you for your email.",'Dear,'+name+
+    '\nThank you for your concern about '+select+'.\nOne of our representatives will contact you soon.');
+    res.send("your message has been sent.");
+  }
+  
 });
 
 app.listen(port, () => {

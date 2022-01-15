@@ -46,7 +46,7 @@
     <script src=" https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
     <script src=" https://cdn.datatables.net/datetime/1.1.1/js/dataTables.dateTime.min.js"></script>
 
-    <!-- <script>
+     <script>
         function loadTable() {
             $.ajax({
                 url: '/treatments',
@@ -71,9 +71,9 @@
         $(document).ready(function () {
             var table = loadTable();
         })
-    </script> -->
+    </script> 
 
-    <script>
+    <!-- <script>
         var editor; // use a global for the submit and return data rendering in the examples
 
         $(document).ready(function () {
@@ -130,7 +130,7 @@
                 ]
             });
         });
-    </script>
+    </script> -->
 
 
 </head>
@@ -144,10 +144,10 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index1.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
                 <!-- <div class="sidebar-brand-icon rotate-n-15">-->
                      <img width="32" class="img-profile rounded-circle"
-                                     src="https://i.ibb.co/W2Dzhfh/Slide1-removebg-preview.png">
+                                     src="https://png.pngtree.com/png-vector/20190405/ourlarge/pngtree-vector-garage-icon-png-image_912030.jpg">
                      <!--<i class="fas fa-laugh-wink"></i> -->
                 <!-- </div>-->
                  <div class="sidebar-brand-text mx-3">Big S Garage</div>
@@ -155,10 +155,9 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
-
             <!-- Nav Item - Tables -->
             <li class="nav-item active">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="index">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li>
@@ -166,7 +165,7 @@
             <hr class="sidebar-divider">
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="contactus.html">
+                <a class="nav-link" href="contact-us">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>About Us</span></a>
             </li>
@@ -226,7 +225,6 @@
                                 <table class="table table-bordered" id="treatmentData" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th></th>
                                             <th>Treatment Number</th>
                                             <th>Treatment Information</th>
                                             <th>Treatment Date</th>
@@ -237,7 +235,6 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th></th>
                                             <th>Treatment Number</th>
                                             <th>Treatment Information</th>
                                             <th>Treatment Date</th>

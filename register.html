@@ -61,6 +61,7 @@
                                             id="repeatPassword" placeholder="Repeat Password">
                                     </div>
                                 </div>
+                                <div class="g-recaptcha" data-sitekey="6LfiwRQeAAAAABB4uGyC0RkC-lFJso2iSUaS6a61"></div>
                                 <button class="btn btn-primary btn-user btn-block">
                                     Register Account
                                 </button>
@@ -96,6 +97,63 @@
     <script src="https://www.google.com/recaptcha/api.js"></script>
 
     <script>
+        document.getElementById('signupform').addEventListener('submit',
+        submitForm);
+        function submitForm(e){
+            e.preventDefault();
+            const captcha = document.querySelector('#g-recaptcha-response').value;
+            return fetch('/captcha', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({captcha })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            console.log(data.success);
+            if (data.success === true)
+            {
+                document.getElementById("errormsg").innerHTML = "";
+                var firstname1 = document.getElementById("firstName").value;
+                var lastname1 = document.getElementById("lastName").value;
+                var email1 = document.getElementById("inputEmail").value;
+                var password1 = document.getElementById("inputPassword").value;
+                var repassword1 = document.getElementById("repeatPassword").value;
+                $.ajax({
+                url: "/sign-up",
+                type: "POST",
+                data:{
+                    'firstName': firstname1,
+                    'lastName': lastname1,
+                    'inputEmail': email1,
+                    'inputPassword': password1,
+                    'repeatPassword': repassword1,
+                },
+                success: function(data){
+                    if (data == "200"){
+                        window.location.href="/index";    
+                    }
+                    else{
+                        document.getElementById("errormsg").innerHTML = data;
+                        if (window.grecaptcha) grecaptcha.reset();
+                    }
+                },
+                error: function(data){
+                    if (window.grecaptcha) grecaptcha.reset();
+                    document.getElementById("errormsg").innerHTML = "Something went wrong. Please try again";
+                },
+            });
+            }
+            else
+            {
+                document.getElementById("errormsg").innerHTML = data.msg;
+            }
+
+        });
+        }
+    </script>
+
+    <!-- <script>
         $("#signupform").submit(function(e) {
             document.getElementById("errormsg").innerHTML = "";
             var firstname1 = document.getElementById("firstName").value;
@@ -128,7 +186,7 @@
             });
         });
     
-    </script>
+    </script> -->
 
 </body>
 

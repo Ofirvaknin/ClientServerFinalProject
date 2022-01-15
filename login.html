@@ -19,7 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body onload="getcookiedata()" class="bg-gradient-primary">
@@ -58,6 +58,7 @@
                                                     Me</label>
                                             </div>
                                         </div>
+                                        <div class="g-recaptcha" data-sitekey="6LfiwRQeAAAAABB4uGyC0RkC-lFJso2iSUaS6a61"></div>
                                         <button type="submit" class="btn btn-primary btn-user btn-block" onclick="cbIsClicked()">
                                             Login
                                         </button>
@@ -143,17 +144,66 @@
 
     </script>
 
+    <script>
+        document.getElementById('loginform').addEventListener('submit',
+        submitForm);
+
+        function submitForm(e){
+            e.preventDefault();
+            const captcha = document.querySelector('#g-recaptcha-response').value;
+            return fetch('/captcha', {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({captcha })
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+            console.log(data.success);
+            if (data.success === true)
+            {
+                document.getElementById("errormsg").innerHTML = "";
+                var email1 = document.getElementById("inputEmail").value;
+                var password1 = document.getElementById("inputPassword").value;  
+                $.ajax({
+                url: "/sign-in",
+                type: "POST",
+                data:{
+                    'inputEmail': email1,
+                    'inputPassword': password1
+                },
+                success: function(data){
+                    if (data == "200"){
+                        window.location.href="/index";    
+                    }
+                    else{
+                        document.getElementById("errormsg").innerHTML = data;
+                    }
+                },
+                error: function(data){
+                    document.getElementById("errormsg").innerHTML = "Something went wrong. Please try again";
+                },
+            });
+            }
+            else
+            {
+                document.getElementById("errormsg").innerHTML = data.msg;
+            }
+
+          });
+        }
+    </script>
+
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
-    <script>
+    <!-- <script>
         $("#loginform").submit(function(e) {
             document.getElementById("errormsg").innerHTML = "";
             var email1 = document.getElementById("inputEmail").value;
@@ -180,7 +230,7 @@
             });
         });
     
-    </script>
+    </script> -->
 </body>
 
 </html>
