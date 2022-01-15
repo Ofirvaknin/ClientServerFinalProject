@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Login</title>
+    <title>BIG S GARAGE - Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -22,7 +22,7 @@
 
 </head>
 
-<body class="bg-gradient-primary">
+<body onload="getcookiedata()" class="bg-gradient-primary">
 
     <div class="container">
 
@@ -41,35 +41,36 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" method="POST" id="loginform">
                                         <div class="form-group">
                                             <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
+                                                id="inputEmail" name="email" aria-describedby="emailHelp"
                                                 placeholder="Enter Email Address...">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                            <input type="password" name="password" class="form-control form-control-user"
+                                                id="inputPassword" placeholder="Password">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <input name ="checkbox" type="checkbox" class="custom-control-input" id="customCheck">
                                                 <label class="custom-control-label" for="customCheck">Remember
                                                     Me</label>
                                             </div>
                                         </div>
-                                        <a href="index.html" class="btn btn-primary btn-user btn-block">
+                                        <button type="submit" class="btn btn-primary btn-user btn-block" onclick="cbIsClicked()">
                                             Login
-                                        </a>
+                                        </button>
+                                        <p id="errormsg" style="color:red; text-align: center;margin-top: 10px;"></p>
                                         <hr>
                                         
                                     </form>
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Forgot Password?</a>
+                                        <a class="small" href="forgot-password">Forgot Password?</a>
                                     </div>
                                     <div class="text-center">
-                                        <a class="small" href="register.html">Create an Account!</a>
+                                        <a class="small" href="sign-up">Create an Account!</a>
                                     </div>
                                 </div>
                             </div>
@@ -83,6 +84,65 @@
 
     </div>
 
+    <script>
+        function cbIsClicked() {
+            
+
+            //Cookie mange
+            if(document.getElementById('customCheck').checked){
+                console.log("Remember me is checked!");
+                //update cookie 
+                var u=document.getElementById('inputEmail').value;
+                var p=document.getElementById('inputPassword').value;
+
+                document.cookie="u_pass="+p+";path=/";
+                document.cookie="u_email="+u+";path=/";
+
+            }
+
+            else{ //if remmber me is uncked delete cookie
+                console.log("Remember me is unchecked!");
+                delCookie('u_email');
+                delCookie('u_pass');
+            }
+
+
+        }
+        //this func loads with the page
+        function getcookiedata(){
+            console.log("getCookiedata: "+document.cookie);
+            var mypass = getCookie('u_pass');
+            if(mypass == '')
+                document.getElementById("customCheck").checked = false;
+                else
+                document.getElementById("customCheck").checked = true;
+            console.log("MYPASS= "+mypass);
+            document.getElementById('inputPassword').value = mypass;
+            document.getElementById('inputEmail').value = getCookie('u_email');
+
+            
+        }
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        function delCookie(cname){
+            document.cookie = cname + "=; Path=/; Expire=Thu, 01 Jan 1970 00:00:01 GMT;";
+        }
+
+    </script>
+
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -93,6 +153,34 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
+    <script>
+        $("#loginform").submit(function(e) {
+            document.getElementById("errormsg").innerHTML = "";
+            var email1 = document.getElementById("inputEmail").value;
+            var password1 = document.getElementById("inputPassword").value;            
+            e.preventDefault();
+            $.ajax({
+                url: "/sign-in",
+                type: "POST",
+                data:{
+                    'inputEmail': email1,
+                    'inputPassword': password1
+                },
+                success: function(data){
+                    if (data == "200"){
+                        window.location.href="/index";    
+                    }
+                    else{
+                        document.getElementById("errormsg").innerHTML = data;
+                    }
+                },
+                error: function(data){
+                    document.getElementById("errormsg").innerHTML = "Something went wrong. Please try again";
+                },
+            });
+        });
+    
+    </script>
 </body>
 
 </html>
