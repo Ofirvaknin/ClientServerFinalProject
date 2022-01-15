@@ -172,6 +172,7 @@
                     }
                     else{
                         document.getElementById("errormsg").innerHTML = data;
+                        if (window.grecaptcha) grecaptcha.reset();
                     }
                 },
                 error: function(data){

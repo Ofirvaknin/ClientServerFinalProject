@@ -153,41 +153,6 @@
         }
     </script>
 
-    <!-- <script>
-        $("#signupform").submit(function(e) {
-            document.getElementById("errormsg").innerHTML = "";
-            var firstname1 = document.getElementById("firstName").value;
-            var lastname1 = document.getElementById("lastName").value;
-            var email1 = document.getElementById("inputEmail").value;
-            var password1 = document.getElementById("inputPassword").value;
-            var repassword1 = document.getElementById("repeatPassword").value;
-
-            e.preventDefault();
-            $.ajax({
-                url: "/sign-up",
-                type: "POST",
-                data:{
-                    'firstName': firstname1,
-                    'lastName': lastname1,
-                    'inputEmail': email1,
-                    'inputPassword': password1,
-                    'repeatPassword': repassword1,
-                },
-                success: function(data){
-                    if (data == "200"){
-                        window.location.href="/sign-in";    
-                    }
-                    else{
-                        document.getElementById("errormsg").innerHTML = data;
-                    }                },
-                error: function(data){
-                    document.getElementById("errormsg").innerHTML = "Something went wrong. Please try again";
-                },
-            });
-        });
-    
-    </script> -->
-
 </body>
 
 </html>
