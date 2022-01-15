@@ -10861,24 +10861,26 @@ a:focus {
 }
 
 .bg-contactus-image{
-  background: url("https://knrb2b.com/wp-content/uploads/2021/02/knr-about-us.png");
+  background: url("https://i.ibb.co/RgYcd1n/big-Slogo-About-Us.png");
   background-position: center;
   background-size: cover;
 }
 .bg-login-image {
-  background: url("https://i.ibb.co/zxHWRpm/Slide3-removebg-preview.png");
+  background: url("https://i.ibb.co/mycmQrK/big-Slogo-Signin.png");
   background-position: center;
   background-size: cover;
 }
 
 .bg-register-image {
-  background: url("https://i.ibb.co/pyM446k/Slide2-removebg-preview.png");
+  background: url("https://i.ibb.co/sFb3jY7/big-Slogo-Signup.png");
   background-position: center;
   background-size: cover;
 }
-
+.selected{
+  color:red;
+}
 .bg-password-image {
-  background: url("https://i.ibb.co/4ghQ6Hc/Slide4-removebg-preview.png");
+  background: url("https://i.ibb.co/4Rfc5zz/big-Slogo-Forgot-Password.png");
   background-position: center;
   background-size: cover;
 }

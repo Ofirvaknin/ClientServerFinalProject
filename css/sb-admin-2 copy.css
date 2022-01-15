@@ -10876,7 +10876,9 @@ a:focus {
   background-position: center;
   background-size: cover;
 }
-
+.row_selected{
+  color:red;
+}
 .bg-password-image {
   background: url("https://i.ibb.co/4ghQ6Hc/Slide4-removebg-preview.png");
   background-position: center;
@@ -10884,7 +10886,7 @@ a:focus {
 }
 
 .bg-icon-image {
-  background: url("https://i.ibb.co/W2Dzhfh/Slide1-removebg-preview.png");
+  background: url("https://png.pngtree.com/png-vector/20190405/ourlarge/pngtree-vector-garage-icon-png-image_912030.jpg");
   background-position: center;
   background-size: cover;
 }

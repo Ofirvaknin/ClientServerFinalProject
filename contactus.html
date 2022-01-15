@@ -31,12 +31,12 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index1.html">
-               <!-- <div class="sidebar-brand-icon rotate-n-15">-->
-                    <img width="32" class="img-profile rounded-circle"
-                                    src="https://i.ibb.co/W2Dzhfh/Slide1-removebg-preview.png">
-                    <!--<i class="fas fa-laugh-wink"></i> -->
-               <!-- </div>-->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
+                <!-- <div class="sidebar-brand-icon rotate-n-15">-->
+                <img width="32" class="img-profile rounded-circle"
+                    src="https://png.pngtree.com/png-vector/20190405/ourlarge/pngtree-vector-garage-icon-png-image_912030.jpg">
+                <!--<i class="fas fa-laugh-wink"></i> -->
+                <!-- </div>-->
                 <div class="sidebar-brand-text mx-3">Big S Garage</div>
             </a>
 
@@ -55,12 +55,13 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li>
+            <hr class="sidebar-divider">
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="contact-us">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Contact Us</span></a>
+                    <span>About Us</span></a>
             </li>
 
             <!-- Divider -->
@@ -88,7 +89,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
- 
+
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -113,9 +114,9 @@
 
                         <!-- Outer Row -->
                         <div class="row justify-content-center card-body">
-                
+
                             <div class="col-xl-10 col-lg-12 col-md-9">
-                
+
                                 <div class="card o-hidden border-0 shadow-lg my-5">
                                     <div class="card-body p-0">
                                         <!-- Nested Row within Card Body -->
@@ -126,38 +127,45 @@
                                                     <div class="text-center">
                                                         <h1 class="h4 text-gray-900 mb-4">Contact us</h1>
                                                     </div>
-                
-                                                    <form class="user" method = "POST" id = "form-field">
+
+                                                    <form class="user" method="POST" id="form-field">
                                                         <div class="form-group pb-2 w-90">
-                                                            <input type="text" class="form-control" id="name" placeholder="Name*" name="name">
+                                                            <input type="text" class="form-control" id="name"
+                                                                placeholder="Name*" name="name">
                                                         </div>
                                                         <div class="form-group pb-2 w-90">
-                                                            <input type="email" class="form-control" id="email" placeholder="Email*" name="email">
+                                                            <input type="email" class="form-control" id="email"
+                                                                placeholder="Email*" name="email">
                                                         </div>
                                                         <div class="form-group pb-2 w-90">
-                                                            <select class="form-select" id = select>
-                                                                <option value="" disabled selected>Contact us concering:*</option>
+                                                            <select class="form-select" id=select>
+                                                                <option value="" disabled selected>Contact us
+                                                                    concering:*</option>
                                                                 <option value="Login">Login Problems</option>
                                                                 <option value="Signup">Sign Up Problems</option>
                                                                 <option value="other">Other</option>
-                                                              </select>                    
+                                                            </select>
                                                         </div>
                                                         <div class="form-group pb-2 w-90">
-                                                            <textarea class="form-control" type="text" id="Textarea" rows="4" placeholder="Subject*" style="resize: none;"></textarea>
+                                                            <textarea class="form-control" type="text" id="Textarea"
+                                                                rows="4" placeholder="Subject*"
+                                                                style="resize: none;"></textarea>
                                                         </div>
-                                                            <button type="submit" class="btn btn-primary btn-user btn-block">Submit</button>
-                                                            <p id="errormsg" style="color:red; text-align: center;margin-top: 10px;"></p>
-                                                        </form>
+                                                        <button type="submit"
+                                                            class="btn btn-primary btn-user btn-block">Submit</button>
+                                                        <p id="errormsg"
+                                                            style="color:red; text-align: center;margin-top: 10px;"></p>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                
+
                             </div>
-                
+
                         </div>
-                
+
                     </div>
 
                     <!-- Content Row -->
@@ -201,7 +209,7 @@
     <script src="js/sb-admin-2.min.js"></script>
 
     <script>
-        $("#form-field").submit(function(e) {
+        $("#form-field").submit(function (e) {
             document.getElementById("errormsg").innerHTML = "";
             var name = document.getElementById("name").value;
             var email = document.getElementById("email").value;
@@ -212,25 +220,25 @@
             $.ajax({
                 url: "/contactus",
                 type: "POST",
-                data:{
+                data: {
                     'name': name,
                     'email': email,
                     'select': select,
                     'Textarea': texta,
                 },
-                success: function(data){
+                success: function (data) {
                     document.getElementById("errormsg").innerHTML = data;
                     document.getElementById("name").value = "";
                     document.getElementById("email").value = "";
                     document.getElementById("select").value = "";
                     document.getElementById("Textarea").value = "";
                 },
-                error: function(data){
+                error: function (data) {
                     document.getElementById("errormsg").innerHTML = "Something went wrong. Please try again";
                 },
             });
         });
-    
+
     </script>
 
 </body>

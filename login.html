@@ -91,7 +91,6 @@
 
             //Cookie mange
             if(document.getElementById('customCheck').checked){
-                console.log("Remember me is checked!");
                 //update cookie 
                 var u=document.getElementById('inputEmail').value;
                 var p=document.getElementById('inputPassword').value;
@@ -102,7 +101,6 @@
             }
 
             else{ //if remmber me is uncked delete cookie
-                console.log("Remember me is unchecked!");
                 delCookie('u_email');
                 delCookie('u_pass');
             }
@@ -111,13 +109,11 @@
         }
         //this func loads with the page
         function getcookiedata(){
-            console.log("getCookiedata: "+document.cookie);
             var mypass = getCookie('u_pass');
             if(mypass == '')
                 document.getElementById("customCheck").checked = false;
                 else
                 document.getElementById("customCheck").checked = true;
-            console.log("MYPASS= "+mypass);
             document.getElementById('inputPassword').value = mypass;
             document.getElementById('inputEmail').value = getCookie('u_email');
 
@@ -158,8 +154,6 @@
         })
           .then(res => res.json())
           .then(data => {
-            console.log(data);
-            console.log(data.success);
             if (data.success === true)
             {
                 document.getElementById("errormsg").innerHTML = "";
@@ -203,34 +197,6 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
-    <!-- <script>
-        $("#loginform").submit(function(e) {
-            document.getElementById("errormsg").innerHTML = "";
-            var email1 = document.getElementById("inputEmail").value;
-            var password1 = document.getElementById("inputPassword").value;            
-            e.preventDefault();
-            $.ajax({
-                url: "/sign-in",
-                type: "POST",
-                data:{
-                    'inputEmail': email1,
-                    'inputPassword': password1
-                },
-                success: function(data){
-                    if (data == "200"){
-                        window.location.href="/index";    
-                    }
-                    else{
-                        document.getElementById("errormsg").innerHTML = data;
-                    }
-                },
-                error: function(data){
-                    document.getElementById("errormsg").innerHTML = "Something went wrong. Please try again";
-                },
-            });
-        });
-    
-    </script> -->
 </body>
 
 </html>

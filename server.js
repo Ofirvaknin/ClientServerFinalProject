@@ -153,7 +153,6 @@ app.post('/sign-in', async (req, res) => {
             res.send('200');
           }
           else{
-            console.log('wrong credientials');
             //message of wrong credientials
             res.send('Wrong credientials!');
           }
@@ -174,6 +173,7 @@ app.post('/sign-in', async (req, res) => {
 
 app.post('/sign-up', async (req, res) => {
   try {
+    req.session.destroy(function(e){});
     client = null;
     // Get user information 
   let firstName = req.body.firstName;
@@ -214,7 +214,6 @@ app.post('/sign-up', async (req, res) => {
   client.query(text, values, (err, resu) => {
     if (err){
       console.log(err);
-      console.log(err["constraint"]);
       if (err["constraint"] == "users_pkey"){
         res.send("Email already exist. You can recover your password if you forgot it.");
 
@@ -245,6 +244,8 @@ app.post('/sign-up', async (req, res) => {
 
 app.post('/forgot-password', async (req, res) => {
   try {
+    req.session.destroy(function(e){});
+
     client = null;
     // Get user information 
     let inputEmail = req.body.InputEmail;
@@ -271,7 +272,6 @@ app.post('/forgot-password', async (req, res) => {
           encryptedPassword = resu.rows[0].password;
           decryptedPassword = encryption.decrypt(encryptedPassword);
           message = "Hello " + resu.rows[0].firstname + ", your password is: " + decryptedPassword;
-          console.log(message);
 
           email.sendEmail(inputEmail, 'Password recovery', message);
           res.send("200");
@@ -320,6 +320,88 @@ app.post('/contactus', (req, res) => {
   
 });
 
+app.post('/deleteTreatment', async (req, res) => {
+  try {
+    let treatmentid = req.body.rowInput;
+    if (treatmentid === '' || treatmentid === null || treatmentid === undefined){
+      res.send("Select row to delete!");
+      return;
+    }
+    if (isNaN(treatmentid)){
+      res.send("Only numbers allowed!");
+      return;
+    }
+    if (parseInt(treatmentid) < 0 ){
+      res.send("Only positive numbers allowed!");
+      return;
+    }
+    text = "DELETE FROM treatments WHERE treatmentid = $1";
+    values = [treatmentid];
+    pool.query(text, values, (err, resu) => {
+      if (err) {
+        res.send("Something went wrong. Please try again");
+      }
+      else{
+        res.send("200");
+      }
+    })
+  }
+  catch {
+    res.send("Something went wrong. Please try again");
+  }
+});
+
+app.post('/updateTreatment', async (req, res) => {
+  try {
+    let treatmentid = req.body.rowInput;
+    let treatmentInformation = req.body.infoInput;
+    let treatmentDate = req.body.dateInput;
+    let treatmentTime = req.body.timeInput;
+    let email = req.body.emailInput;
+    let carnumber = req.body.carInput;
+
+    text = "UPDATE treatments SET treatmentinfo = $1,treatmentdate = $2,treatmenttime = $3,workeremail = $4,carnumber = $5 WHERE treatmentid = $6;";
+    values = [treatmentInformation, treatmentDate, treatmentTime, email, carnumber, treatmentid];
+    pool.query(text, values, (err, resu) => {
+      if (err) {
+        console.log(err);
+        res.send("Something went wrong. Please try again");
+      }
+      else {
+        res.send("200");
+      }
+    })
+  }
+  catch {
+    res.send("Something went wrong. Please try again");
+  }
+});
+
+app.post('/addTreatment', async (req, res) => {
+  try {
+    let treatmentInformation = req.body.infoInput;
+    let treatmentDate = req.body.dateInput;
+    let treatmentTime = req.body.timeInput;
+    let email = req.body.emailInput;
+    let carnumber = req.body.carInput;
+
+    text = 'insert into treatments(treatmentinfo, treatmentdate, treatmenttime,workeremail,carnumber) values($1,$2,$3,$4,$5)'
+    values = [treatmentInformation, treatmentDate, treatmentTime, email, carnumber];
+    pool.query(text, values, (err, resu) => {
+      if (err) {
+        console.log(err);
+        res.send("Something went wrong. Please try again");
+      }
+      else {
+        res.send("200");
+      }
+    })
+  }
+  catch {
+    res.send("Something went wrong. Please try again");
+  }
+});
+ 
 app.listen(port, () => {
   console.log('App listening on port %d!', port);
 });
