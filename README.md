@@ -4,9 +4,8 @@ A client-server project for Client-Server course.
 
 ### Usage
 You can visit the project's website to try the application:
-```sh
-$ https://garageproject.herokuapp.com/index
-```
+https://garageproject.herokuapp.com/index
+
 
 ### Installation
 
