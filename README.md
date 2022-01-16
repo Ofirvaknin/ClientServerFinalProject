@@ -1,2 +1,23 @@
 # ClientServerFinalProject
-Git repository for final project in Client-Server course
+
+A client-server project for Client-Server course.
+
+### Usage
+You can visit the project's website to try the application:
+```sh
+$ https://garageproject.herokuapp.com/index
+```
+
+### Installation
+
+Clone the repository
+
+```sh
+$ git clone https://github.com/Ofirvaknin/ClientServerFinalProject.git
+```
+
+Install the dependencies
+
+```sh
+$ npm install
+```
